@@ -21,8 +21,7 @@ __host__ void preprocesamientoKMP(char* pattern, int m, int f[])
         f[i] = k + 1;
     }
 }
- 
-//check whether target string contains pattern 
+
 __global__ void KMP(char* pattern, char* target,int f[],int c[],int sizePattern, int sizeText)
 {
     int index = blockIdx.x*blockDim.x + threadIdx.x;
@@ -30,14 +29,10 @@ __global__ void KMP(char* pattern, char* target,int f[],int c[],int sizePattern,
     int i = sizePattern * index;
     int j = sizePattern * (index + 2)-1;
 
-    //printf("1-i: %i j: %i n: %i index: %i\n", i, j, sizePattern, index);
-
     if(i > sizeText)
         return;
     if(j > sizeText)
         j = sizeText;
-
-    //printf("2-i: %i j: %i n: %i index: %i\n", i, j, sizePattern, index);
 
     int k = 0;        
     while (i < j)
