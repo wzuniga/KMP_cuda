@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void preprocesamientoKMP(char* pattern, int m, int f[])
+__host__ void preprocesamientoKMP(char* pattern, int m, int f[])
 {
     int k;
     f[0] = -1;
@@ -66,13 +66,10 @@ __global__ void KMP(char* pattern, char* target,int f[],int c[],int sizePattern,
 int main(int argc, char* argv[])
 {
     // constante de tamaño
-    //const int L = 40000000;
     const int S = 40000000;
     
     // cantidad de threads
-    //int M = 10;
     int M = 1024;
-    //int M = 8192;
 
     // controla tamaño de char 1 a 4
     int charSize = 4;
@@ -80,11 +77,8 @@ int main(int argc, char* argv[])
     // varibles en CPU
     char *tar;
     char *pat;
-    //char *temp;
-    //char *tempTar;
     tar = (char*)malloc(2000000);
     pat = (char*)malloc(S*charSize);
-    //temp = (char*)malloc(0);
     
     // Variables en GPU
     char *d_tar;
@@ -130,10 +124,6 @@ int main(int argc, char* argv[])
     cudaEventCreate(&stop);
     cudaEventCreate(&local_s);
     cudaEventCreate(&local_e);
-
-    //printf("Iniciando proceso en GPU\n");
-    
-    //time ( &timeT_init );
     
     preprocesamientoKMP(pat, m, fault);
     cudaEventRecord(start);
@@ -167,8 +157,6 @@ int main(int argc, char* argv[])
     cudaEventSynchronize(local_e);
     cudaEventElapsedTime(&milis, start, stop);
     cudaEventElapsedTime(&local, local_s, local_e);
-
-    //time ( &timeT_end );
     
     // mostrar resultados
     for(int i = 0;i<m; i++)
@@ -177,10 +165,8 @@ int main(int argc, char* argv[])
     
     
     printf("Blocks: %i Threads: %i n: %i m:%i\n", (m/n+M)/M, M, n, m);
-    //printf("Tiempo copia a GPU: %1.15f sg.\n", difftime(timeL_end,timeL_init));
     printf("Tiempo ejecucion: %1.15f ml.\n", milis);
     printf("Tiempo ejecucion kernel: %1.15f ml.\n", local);
-    //printf("Tiempo total: %1.15f s\n", difftime(timeT_end,timeT_init));
 
     return 0;
 }
